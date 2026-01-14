@@ -44,15 +44,12 @@ A classic Asteroids game implementation in Python using Pygame.
 - `asteroid.py`: Asteroid behavior and splitting logic.
 - `shot.py`: Projectile logic.
 - `constants.py`: Game settings and physics constants.
-- `logger.py`: Logging functionality for game events and state.
 - `bomb.py`: Bomb behavior and logic.
 - `explosion.py`: Explosion behavior and logic.
 - `powerup.py`: Powerup behavior and logic.
 - `asteroidfield.py`: Asteroid field behavior and logic.
 - `circleshape.py`: Circle shape behavior and logic.
 
-## Logging
 
-- `log_event(event)`: Log a game event.
-- `log_state()`: Log the current game state.
+
 

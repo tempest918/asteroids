@@ -1,7 +1,6 @@
 import pygame
 import sys
 from constants import *
-from logger import log_state, log_event
 from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
@@ -61,7 +60,6 @@ def main():
         asteroid_field = AsteroidField()
 
     while True:
-        log_state()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
@@ -122,7 +120,6 @@ def main():
             for asteroid in asteroids:
                 for shot in shots:
                     if asteroid.collides_with(shot):
-                        log_event("asteroid_shot")
                         asteroid.split()
                         Explosion(asteroid.position.x, asteroid.position.y)
                         sound_manager.play_small_explosion()
@@ -133,7 +130,6 @@ def main():
                 if player.collides_with(asteroid):
                     if player.invulnerable_timer > 0:
                          continue
-                    log_event("player_hit")
                     sound_manager.play_hit()
                     lives -= 1
                     if lives > 0:
@@ -143,7 +139,6 @@ def main():
 
             for powerup in powerups:
                 if player.collides_with(powerup):
-                    log_event("powerup_pickup")
                     sound_manager.play_powerup()
                     if powerup.kind == "bomb":
                         player.num_bombs += 1
@@ -161,7 +156,6 @@ def main():
                             asteroid.kill()
                             Explosion(asteroid.position.x, asteroid.position.y)
                             score += 50
-                            log_event("asteroid_bombed")
                     bomb.damage_done = True
             
             for obj in drawable:
