@@ -44,6 +44,10 @@ def main():
         screen.blit(background_image, (0, 0))
 
         updatable.update(dt)
+        
+        for obj in updatable:
+            if hasattr(obj, "wrap_screen"):
+                obj.wrap_screen(SCREEN_WIDTH, SCREEN_HEIGHT)
 
         for asteroid in asteroids:
             for shot in shots:
