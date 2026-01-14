@@ -13,6 +13,8 @@ def main():
     print(f"Screen height: {SCREEN_HEIGHT}")
 
     pygame.init()
+    score = 0
+    font = pygame.font.Font(None, 36)
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     background_image = pygame.image.load("space.png")
 
@@ -49,6 +51,7 @@ def main():
                     log_event("asteroid_shot")
                     asteroid.split()
                     shot.kill()
+                    score += 100
 
         for asteroid in asteroids:
             if player.collides_with(asteroid):
@@ -58,6 +61,9 @@ def main():
         
         for obj in drawable:
             obj.draw(screen)
+        
+        score_text = font.render(f"Score: {score}", True, (255, 255, 255))
+        screen.blit(score_text, (10, 10))
 
         pygame.display.flip()   
         dt = (clock.tick(60)) / 1000
