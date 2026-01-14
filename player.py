@@ -72,10 +72,8 @@ class Player(CircleShape):
         self.speed_boost_timer -= dt
         self.invulnerable_timer -= dt
 
-        # Weapon switching debug key
         if keys[pygame.K_TAB]:
-             # Simple toggle for now, but better to handle KEYDOWN in main
-             pass
+            pass
 
         if keys[pygame.K_a]:
             self.rotate(-dt)
