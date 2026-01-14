@@ -12,6 +12,7 @@ class Player(CircleShape):
         self.invulnerable_timer = 0
         self.weapon_type = "normal"
         self.num_bombs = PLAYER_BOMBS
+        self.locked_keys = [k for k, v in enumerate(pygame.key.get_pressed()) if v]
     
     def power_up(self, power_type):
         if power_type == "speed":
@@ -29,6 +30,7 @@ class Player(CircleShape):
         self.invulnerable_timer = 0
         self.weapon_type = "normal"
         self.num_bombs = PLAYER_BOMBS
+        self.locked_keys = [k for k, v in enumerate(pygame.key.get_pressed()) if v]
     
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -107,16 +109,23 @@ class Player(CircleShape):
         self.shoot_cooldown -= dt
         self.speed_boost_timer -= dt
         self.invulnerable_timer -= dt
+        
+        for k in list(self.locked_keys):
+            if not keys[k]:
+                self.locked_keys.remove(k)
 
-        if keys[pygame.K_a]:
+        def is_active(key):
+            return keys[key] and key not in self.locked_keys
+
+        if is_active(pygame.K_a):
             self.rotate(-dt)
-        if keys[pygame.K_d]:
+        if is_active(pygame.K_d):
             self.rotate(dt)
-        if keys[pygame.K_w]:
+        if is_active(pygame.K_w):
             self.move(dt)
-        if keys[pygame.K_s]:
+        if is_active(pygame.K_s):
             self.move(-dt)
-        if keys[pygame.K_SPACE]:
+        if is_active(pygame.K_SPACE):
             if self.shoot_cooldown <= 0:
                 self.shoot()
                 self.shoot_cooldown = PLAYER_SHOOT_COOLDOWN_SECONDS
