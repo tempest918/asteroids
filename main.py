@@ -125,7 +125,7 @@ def main():
         bomb_text = font.render(f"Bombs: {player.num_bombs}", True, (255, 255, 255))
         screen.blit(bomb_text, (10, 40))
 
-        for i in range(lives):
+        for i in range(lives - 1):
             x = SCREEN_WIDTH - 30 - (i * 30)
             y = 30
             points = [
