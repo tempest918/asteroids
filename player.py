@@ -1,5 +1,5 @@
 from circleshape import CircleShape
-from constants import LINE_WIDTH, PLAYER_RADIUS, PLAYER_TURN_SPEED, PLAYER_SPEED, PLAYER_SHOT_SPEED, PLAYER_SHOOT_COOLDOWN_SECONDS, PLAYER_ACCELERATION, PLAYER_FRICTION
+from constants import *
 from shot import Shot
 import pygame
 
@@ -7,12 +7,11 @@ class Player(CircleShape):
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
-        self.rotation = 0
-        self.rotation = 0
         self.shoot_cooldown = 0
         self.speed_boost_timer = 0
         self.invulnerable_timer = 0
         self.weapon_type = "normal"
+        self.num_bombs = PLAYER_BOMBS
     
     def power_up(self, power_type):
         if power_type == "speed":
@@ -27,6 +26,7 @@ class Player(CircleShape):
         self.speed_boost_timer = 0
         self.invulnerable_timer = 0
         self.weapon_type = "normal"
+        self.num_bombs = PLAYER_BOMBS
     
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)

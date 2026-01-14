@@ -51,7 +51,9 @@ def main():
                 return
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_b:
-                    Bomb(player.position.x, player.position.y)
+                    if player.num_bombs > 0:
+                         Bomb(player.position.x, player.position.y)
+                         player.num_bombs -= 1
 
         screen.blit(background_image, (0, 0))
 
@@ -107,6 +109,9 @@ def main():
         
         score_text = font.render(f"Score: {score}", True, (255, 255, 255))
         screen.blit(score_text, (10, 10))
+        
+        bomb_text = font.render(f"Bombs: {player.num_bombs}", True, (255, 255, 255))
+        screen.blit(bomb_text, (10, 40))
 
         for i in range(lives):
             x = SCREEN_WIDTH - 30 - (i * 30)
