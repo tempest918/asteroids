@@ -14,6 +14,7 @@ def main():
 
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    background_image = pygame.image.load("space.png")
 
     clock = pygame.time.Clock()
     dt = 0
@@ -38,7 +39,7 @@ def main():
             if event.type == pygame.QUIT:
                 return
 
-        screen.fill((0, 0, 0))
+        screen.blit(background_image, (0, 0))
 
         updatable.update(dt)
 
