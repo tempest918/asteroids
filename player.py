@@ -7,12 +7,24 @@ class Player(CircleShape):
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
+        self.rotation = 0
+        self.rotation = 0
         self.shoot_cooldown = 0
+        self.speed_boost_timer = 0
+        self.invulnerable_timer = 0
     
+    def power_up(self, power_type):
+        if power_type == "speed":
+            self.speed_boost_timer = 5.0
+        elif power_type == "shield":
+            self.invulnerable_timer = 5.0
+            
     def respawn(self, x, y):
         self.position = pygame.Vector2(x, y)
         self.velocity = pygame.Vector2(0, 0)
         self.rotation = 0
+        self.speed_boost_timer = 0
+        self.invulnerable_timer = 0
     
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -24,13 +36,18 @@ class Player(CircleShape):
     
     def draw(self, screen):
         pygame.draw.polygon(screen, "white", self.triangle(), LINE_WIDTH)
+        if self.invulnerable_timer > 0:
+            pygame.draw.circle(screen, "cyan", self.position, self.radius + 5, 2)
     
     def rotate(self, dt):
         self.rotation += PLAYER_TURN_SPEED * dt
 
     def move(self, dt):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        self.velocity += forward * PLAYER_ACCELERATION * dt
+        accel = PLAYER_ACCELERATION
+        if self.speed_boost_timer > 0:
+            accel *= 2.0
+        self.velocity += forward * accel * dt
 
     def shoot(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -42,6 +59,8 @@ class Player(CircleShape):
     def update(self, dt):
         keys = pygame.key.get_pressed()
         self.shoot_cooldown -= dt
+        self.speed_boost_timer -= dt
+        self.invulnerable_timer -= dt
 
         if keys[pygame.K_a]:
             self.rotate(-dt)

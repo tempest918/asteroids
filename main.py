@@ -6,6 +6,8 @@ from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
+from powerup import PowerUp
+import random
 
 def main():
     print(f"Starting Asteroids with pygame version: {pygame.version.ver}")
@@ -26,11 +28,13 @@ def main():
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
+    powerups = pygame.sprite.Group()
 
     Player.containers = updatable, drawable
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = (updatable)
     Shot.containers = (shots, updatable, drawable)
+    PowerUp.containers = (powerups, updatable, drawable)
 
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     asteroid_field = AsteroidField()
@@ -43,6 +47,12 @@ def main():
                 return
 
         screen.blit(background_image, (0, 0))
+
+        if random.randint(0, 900) == 0:
+            x = random.randint(50, SCREEN_WIDTH - 50)
+            y = random.randint(50, SCREEN_HEIGHT - 50)
+            kind = random.choice(["speed", "shield"])
+            PowerUp(x, y, kind)
 
         updatable.update(dt)
         
@@ -60,6 +70,8 @@ def main():
 
         for asteroid in asteroids:
             if player.collides_with(asteroid):
+                if player.invulnerable_timer > 0:
+                     continue
                 log_event("player_hit")
                 lives -= 1
                 if lives > 0:
@@ -67,6 +79,12 @@ def main():
                 else:
                     print("Game over!")
                     sys.exit()
+
+        for powerup in powerups:
+            if player.collides_with(powerup):
+                log_event("powerup_pickup")
+                player.power_up(powerup.kind)
+                powerup.kill()
         
         for obj in drawable:
             obj.draw(screen)
