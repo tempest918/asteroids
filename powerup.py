@@ -1,6 +1,6 @@
 from circleshape import CircleShape
 import pygame
-from constants import PLAYER_LIVES
+from constants import *
 
 class PowerUp(CircleShape):
     def __init__(self, x, y, kind):
@@ -24,6 +24,9 @@ class PowerUp(CircleShape):
         elif self.kind == "life":
             color = "green"
             letter = "L"
+        elif self.kind == "weapon":
+            color = "purple"
+            letter = "W"
             
         pygame.draw.circle(screen, color, self.position, self.radius)
         

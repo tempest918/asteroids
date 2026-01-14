@@ -1,6 +1,6 @@
 import pygame
 import sys
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_LIVES
+from constants import *
 from logger import log_state, log_event
 from player import Player
 from asteroid import Asteroid
@@ -8,14 +8,10 @@ from asteroidfield import AsteroidField
 from shot import Shot
 from powerup import PowerUp
 from bomb import Bomb
+from explosion import Explosion
 import random
-from constants import *
 
 def main():
-    print(f"Starting Asteroids with pygame version: {pygame.version.ver}")
-    print(f"Screen width: {SCREEN_WIDTH}")
-    print(f"Screen height: {SCREEN_HEIGHT}")
-
     pygame.init()
     score = 0
     lives = PLAYER_LIVES
@@ -32,6 +28,7 @@ def main():
     shots = pygame.sprite.Group()
     powerups = pygame.sprite.Group()
     bombs = pygame.sprite.Group()
+    explosions = pygame.sprite.Group()
 
     Player.containers = updatable, drawable
     Asteroid.containers = (asteroids, updatable, drawable)
@@ -39,6 +36,7 @@ def main():
     Shot.containers = (shots, updatable, drawable)
     PowerUp.containers = (powerups, updatable, drawable)
     Bomb.containers = (bombs, updatable, drawable)
+    Explosion.containers = (explosions, updatable, drawable)
 
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     asteroid_field = AsteroidField()
@@ -54,19 +52,20 @@ def main():
                     if player.num_bombs > 0:
                          Bomb(player.position.x, player.position.y)
                          player.num_bombs -= 1
-                if event.key == pygame.K_TAB:
-                    player.switch_weapon()
 
         screen.blit(background_image, (0, 0))
 
         if random.randint(0, 900) == 0:
             x = random.randint(50, SCREEN_WIDTH - 50)
             y = random.randint(50, SCREEN_HEIGHT - 50)
-            kind = random.choices(
-                ["speed", "shield", "bomb", "life"],
-                weights=[35, 35, 25, 5],
-                k=1
-            )[0]
+            if len(asteroids) > 35:
+                kind = "weapon"
+            else:
+                kind = random.choices(
+                    ["speed", "shield", "bomb", "life", "weapon"],
+                    weights=[30, 30, 20, 5, 15],
+                    k=1
+                )[0]
             PowerUp(x, y, kind)
 
         updatable.update(dt)
@@ -80,6 +79,7 @@ def main():
                 if asteroid.collides_with(shot):
                     log_event("asteroid_shot")
                     asteroid.split()
+                    Explosion(asteroid.position.x, asteroid.position.y)
                     shot.kill()
                     score += 100
 
@@ -111,7 +111,8 @@ def main():
                 for asteroid in asteroids:
                     if bomb.position.distance_to(asteroid.position) <= BOMB_RADIUS:
                         asteroid.kill()
-                        score += 50 # Bonus points for bomb kills
+                        Explosion(asteroid.position.x, asteroid.position.y)
+                        score += 50
                         log_event("asteroid_bombed")
                 bomb.damage_done = True
         

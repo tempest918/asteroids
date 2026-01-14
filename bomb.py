@@ -1,6 +1,6 @@
 from circleshape import CircleShape
 import pygame
-from constants import BOMB_RADIUS
+from constants import *
 
 class Bomb(CircleShape):
     def __init__(self, x, y):

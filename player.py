@@ -18,6 +18,8 @@ class Player(CircleShape):
             self.speed_boost_timer = 5.0
         elif power_type == "shield":
             self.invulnerable_timer = 5.0
+        elif power_type == "weapon":
+            self.weapon_type = "spread"
             
     def respawn(self, x, y):
         self.position = pygame.Vector2(x, y)
@@ -50,12 +52,6 @@ class Player(CircleShape):
         if self.speed_boost_timer > 0:
             accel *= 2.0
         self.velocity += forward * accel * dt
-
-    def switch_weapon(self):
-        if self.weapon_type == "normal":
-            self.weapon_type = "spread"
-        else:
-            self.weapon_type = "normal"
 
     def shoot(self):
         if self.weapon_type == "normal":
