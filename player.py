@@ -12,6 +12,7 @@ class Player(CircleShape):
         self.shoot_cooldown = 0
         self.speed_boost_timer = 0
         self.invulnerable_timer = 0
+        self.weapon_type = "normal"
     
     def power_up(self, power_type):
         if power_type == "speed":
@@ -25,6 +26,7 @@ class Player(CircleShape):
         self.rotation = 0
         self.speed_boost_timer = 0
         self.invulnerable_timer = 0
+        self.weapon_type = "normal"
     
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -50,7 +52,15 @@ class Player(CircleShape):
         self.velocity += forward * accel * dt
 
     def shoot(self):
-        forward = pygame.Vector2(0, 1).rotate(self.rotation)
+        if self.weapon_type == "normal":
+            self._spawn_shot(0)
+        elif self.weapon_type == "spread":
+            self._spawn_shot(0)
+            self._spawn_shot(15)
+            self._spawn_shot(-15)
+
+    def _spawn_shot(self, angle_offset):
+        forward = pygame.Vector2(0, 1).rotate(self.rotation + angle_offset)
         position = self.position + forward * self.radius
         velocity = forward * PLAYER_SHOT_SPEED
         shot = Shot(position.x, position.y)
@@ -61,6 +71,11 @@ class Player(CircleShape):
         self.shoot_cooldown -= dt
         self.speed_boost_timer -= dt
         self.invulnerable_timer -= dt
+
+        # Weapon switching debug key
+        if keys[pygame.K_TAB]:
+             # Simple toggle for now, but better to handle KEYDOWN in main
+             pass
 
         if keys[pygame.K_a]:
             self.rotate(-dt)

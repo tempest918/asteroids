@@ -7,7 +7,9 @@ from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
 from powerup import PowerUp
+from bomb import Bomb
 import random
+from constants import *
 
 def main():
     print(f"Starting Asteroids with pygame version: {pygame.version.ver}")
@@ -29,12 +31,14 @@ def main():
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
     powerups = pygame.sprite.Group()
+    bombs = pygame.sprite.Group()
 
     Player.containers = updatable, drawable
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = (updatable)
     Shot.containers = (shots, updatable, drawable)
     PowerUp.containers = (powerups, updatable, drawable)
+    Bomb.containers = (bombs, updatable, drawable)
 
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     asteroid_field = AsteroidField()
@@ -45,6 +49,9 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_b:
+                    Bomb(player.position.x, player.position.y)
 
         screen.blit(background_image, (0, 0))
 
@@ -85,6 +92,15 @@ def main():
                 log_event("powerup_pickup")
                 player.power_up(powerup.kind)
                 powerup.kill()
+        
+        for bomb in bombs:
+            if bomb.exploding and not bomb.damage_done:
+                for asteroid in asteroids:
+                    if bomb.position.distance_to(asteroid.position) <= BOMB_RADIUS:
+                        asteroid.kill()
+                        score += 50 # Bonus points for bomb kills
+                        log_event("asteroid_bombed")
+                bomb.damage_done = True
         
         for obj in drawable:
             obj.draw(screen)
