@@ -4,8 +4,9 @@ from shot import Shot
 import pygame
 
 class Player(CircleShape):
-    def __init__(self, x, y):
+    def __init__(self, x, y, sound_manager=None):
         super().__init__(x, y, PLAYER_RADIUS)
+        self.sound_manager = sound_manager
         self.rotation = 0
         self.shoot_cooldown = 0
         self.speed_boost_timer = 0
@@ -92,10 +93,14 @@ class Player(CircleShape):
     def shoot(self):
         if self.weapon_type == "normal":
             self._spawn_shot(0)
+            if self.sound_manager:
+                self.sound_manager.play_shoot()
         elif self.weapon_type == "spread":
             self._spawn_shot(0)
             self._spawn_shot(15)
             self._spawn_shot(-15)
+            if self.sound_manager:
+                self.sound_manager.play_spread_shoot()
 
     def _spawn_shot(self, angle_offset):
         forward = pygame.Vector2(0, 1).rotate(self.rotation + angle_offset)

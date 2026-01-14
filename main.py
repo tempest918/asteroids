@@ -9,6 +9,7 @@ from shot import Shot
 from powerup import PowerUp
 from bomb import Bomb
 from explosion import Explosion
+from sounds import SoundManager
 import random
 
 def main():
@@ -41,6 +42,7 @@ def main():
     lives = PLAYER_LIVES
     player = None
     asteroid_field = None
+    sound_manager = SoundManager()
     dt = 0
 
     def start_game():
@@ -55,7 +57,7 @@ def main():
         
         score = 0
         lives = PLAYER_LIVES
-        player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, sound_manager)
         asteroid_field = AsteroidField()
 
     while True:
@@ -123,6 +125,7 @@ def main():
                         log_event("asteroid_shot")
                         asteroid.split()
                         Explosion(asteroid.position.x, asteroid.position.y)
+                        sound_manager.play_small_explosion()
                         shot.kill()
                         score += 100
 
@@ -131,6 +134,7 @@ def main():
                     if player.invulnerable_timer > 0:
                          continue
                     log_event("player_hit")
+                    sound_manager.play_hit()
                     lives -= 1
                     if lives > 0:
                         player.respawn(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
@@ -140,6 +144,7 @@ def main():
             for powerup in powerups:
                 if player.collides_with(powerup):
                     log_event("powerup_pickup")
+                    sound_manager.play_powerup()
                     if powerup.kind == "bomb":
                         player.num_bombs += 1
                     elif powerup.kind == "life":
@@ -150,6 +155,7 @@ def main():
             
             for bomb in bombs:
                 if bomb.exploding and not bomb.damage_done:
+                    sound_manager.play_explosion()
                     for asteroid in asteroids:
                         if bomb.position.distance_to(asteroid.position) <= BOMB_RADIUS:
                             asteroid.kill()
