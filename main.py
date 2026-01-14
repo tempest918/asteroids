@@ -54,13 +54,19 @@ def main():
                     if player.num_bombs > 0:
                          Bomb(player.position.x, player.position.y)
                          player.num_bombs -= 1
+                if event.key == pygame.K_TAB:
+                    player.switch_weapon()
 
         screen.blit(background_image, (0, 0))
 
         if random.randint(0, 900) == 0:
             x = random.randint(50, SCREEN_WIDTH - 50)
             y = random.randint(50, SCREEN_HEIGHT - 50)
-            kind = random.choice(["speed", "shield"])
+            kind = random.choices(
+                ["speed", "shield", "bomb", "life"],
+                weights=[35, 35, 25, 5],
+                k=1
+            )[0]
             PowerUp(x, y, kind)
 
         updatable.update(dt)
@@ -92,7 +98,12 @@ def main():
         for powerup in powerups:
             if player.collides_with(powerup):
                 log_event("powerup_pickup")
-                player.power_up(powerup.kind)
+                if powerup.kind == "bomb":
+                    player.num_bombs += 1
+                elif powerup.kind == "life":
+                    lives += 1
+                else:
+                    player.power_up(powerup.kind)
                 powerup.kill()
         
         for bomb in bombs:

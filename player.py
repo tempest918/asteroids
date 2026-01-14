@@ -51,6 +51,12 @@ class Player(CircleShape):
             accel *= 2.0
         self.velocity += forward * accel * dt
 
+    def switch_weapon(self):
+        if self.weapon_type == "normal":
+            self.weapon_type = "spread"
+        else:
+            self.weapon_type = "normal"
+
     def shoot(self):
         if self.weapon_type == "normal":
             self._spawn_shot(0)
@@ -71,9 +77,6 @@ class Player(CircleShape):
         self.shoot_cooldown -= dt
         self.speed_boost_timer -= dt
         self.invulnerable_timer -= dt
-
-        if keys[pygame.K_TAB]:
-            pass
 
         if keys[pygame.K_a]:
             self.rotate(-dt)
