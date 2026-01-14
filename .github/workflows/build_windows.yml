@@ -21,7 +21,6 @@ jobs:
           requirements: 'requirements.txt'
           upload_exe_with_name: 'Asteroids'
           spec: 'Asteroids.spec'
-          options: --onefile, --windowed, --add-data "space.png;.", --add-data "sounds;sounds", --name Asteroids, main.py
 
       - name: Release
         uses: softprops/action-gh-release@v1
