@@ -38,6 +38,40 @@ class Player(CircleShape):
         c = self.position - forward * self.radius + right
         return [a, b, c]
     
+    def collides_with(self, other):
+        vertices = self.triangle()
+        
+        def sign(p1, p2, p3):
+            return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y)
+        
+        d1 = sign(other.position, vertices[0], vertices[1])
+        d2 = sign(other.position, vertices[1], vertices[2])
+        d3 = sign(other.position, vertices[2], vertices[0])
+        
+        has_neg = (d1 < 0) or (d2 < 0) or (d3 < 0)
+        has_pos = (d1 > 0) or (d2 > 0) or (d3 > 0)
+        
+        if not (has_neg and has_pos):
+            return True
+            
+        for i in range(3):
+            p1 = vertices[i]
+            p2 = vertices[(i + 1) % 3]
+            
+            l2 = p1.distance_squared_to(p2)
+            if l2 == 0:
+                dist_sq = other.position.distance_squared_to(p1)
+            else:
+                t = ((other.position.x - p1.x) * (p2.x - p1.x) + (other.position.y - p1.y) * (p2.y - p1.y)) / l2
+                t = max(0, min(1, t))
+                projection = p1 + (p2 - p1) * t
+                dist_sq = other.position.distance_squared_to(projection)
+            
+            if dist_sq <= other.radius * other.radius:
+                return True
+                
+        return False
+    
     def draw(self, screen):
         pygame.draw.polygon(screen, "white", self.triangle(), LINE_WIDTH)
         if self.invulnerable_timer > 0:
