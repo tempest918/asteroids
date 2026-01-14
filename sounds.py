@@ -1,5 +1,6 @@
 import pygame
 import os
+from constants import resource_path
 
 class SoundManager:
     def __init__(self):
@@ -19,7 +20,7 @@ class SoundManager:
         }
 
         for name, filename in sound_files.items():
-            path = os.path.join("sounds", filename)
+            path = resource_path(os.path.join("sounds", filename))
             if os.path.exists(path):
                 try:
                     self.sounds[name] = pygame.mixer.Sound(path)

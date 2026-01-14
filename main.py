@@ -15,7 +15,7 @@ import random
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    background_image = pygame.image.load("space.png")
+    background_image = pygame.image.load(resource_path("space.png"))
     clock = pygame.time.Clock()
     
     font = pygame.font.Font(None, 36)
