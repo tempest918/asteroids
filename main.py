@@ -1,6 +1,6 @@
 import pygame
 import sys
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_LIVES
 from logger import log_state, log_event
 from player import Player
 from asteroid import Asteroid
@@ -14,6 +14,7 @@ def main():
 
     pygame.init()
     score = 0
+    lives = PLAYER_LIVES
     font = pygame.font.Font(None, 36)
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     background_image = pygame.image.load("space.png")
@@ -60,14 +61,28 @@ def main():
         for asteroid in asteroids:
             if player.collides_with(asteroid):
                 log_event("player_hit")
-                print("Game over!")
-                sys.exit()
+                lives -= 1
+                if lives > 0:
+                    player.respawn(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+                else:
+                    print("Game over!")
+                    sys.exit()
         
         for obj in drawable:
             obj.draw(screen)
         
         score_text = font.render(f"Score: {score}", True, (255, 255, 255))
         screen.blit(score_text, (10, 10))
+
+        for i in range(lives):
+            x = SCREEN_WIDTH - 30 - (i * 30)
+            y = 30
+            points = [
+                (x, y - 10),
+                (x - 8, y + 10),
+                (x + 8, y + 10)
+            ]
+            pygame.draw.polygon(screen, "white", points, 2)
 
         pygame.display.flip()   
         dt = (clock.tick(60)) / 1000
