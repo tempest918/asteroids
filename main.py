@@ -57,7 +57,7 @@ def main():
         score = 0
         lives = PLAYER_LIVES
         player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, sound_manager)
-        asteroid_field = AsteroidField()
+        asteroid_field = AsteroidField(asteroids)
 
     while True:
         for event in pygame.event.get():
