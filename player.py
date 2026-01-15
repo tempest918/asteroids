@@ -28,7 +28,7 @@ class Player(CircleShape):
         self.velocity = pygame.Vector2(0, 0)
         self.rotation = 0
         self.speed_boost_timer = 0
-        self.invulnerable_timer = 0
+        self.invulnerable_timer = PLAYER_RESPAWN_INVULNERABILITY_SECONDS
         self.weapon_type = "normal"
         self.num_bombs = PLAYER_BOMBS
         self.locked_keys = [k for k, v in enumerate(pygame.key.get_pressed()) if v]

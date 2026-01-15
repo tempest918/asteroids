@@ -134,6 +134,9 @@ def main():
                     lives -= 1
                     if lives > 0:
                         player.respawn(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+                        for asteroid in asteroids:
+                            if asteroid.position.distance_to(player.position) < PLAYER_RESPAWN_SAFE_RADIUS:
+                                asteroid.kill()
                     else:
                         state = "GAME_OVER"
 
