@@ -14,6 +14,7 @@ class Player(CircleShape):
         self.speed_boost_timer = 0
         self.invulnerable_timer = 0
         self.weapon_type = "normal"
+        self.spread_shots_remaining = 0
         self.num_bombs = PLAYER_BOMBS
         self.locked_keys = [k for k, v in enumerate(pygame.key.get_pressed()) if v]
     
@@ -24,6 +25,7 @@ class Player(CircleShape):
             self.invulnerable_timer = 5.0
         elif power_type == "weapon":
             self.weapon_type = "spread"
+            self.spread_shots_remaining = PLAYER_SPREAD_SHOT_LIMIT
             
     def respawn(self, x, y):
         self.position = pygame.Vector2(x, y)
@@ -32,6 +34,7 @@ class Player(CircleShape):
         self.speed_boost_timer = 0
         self.invulnerable_timer = PLAYER_RESPAWN_INVULNERABILITY_SECONDS
         self.weapon_type = "normal"
+        self.spread_shots_remaining = 0
         self.num_bombs = PLAYER_BOMBS
         self.locked_keys = [k for k, v in enumerate(pygame.key.get_pressed()) if v]
     
@@ -108,6 +111,10 @@ class Player(CircleShape):
             self._spawn_shot(-15)
             if self.sound_manager:
                 self.sound_manager.play_spread_shoot()
+            
+            self.spread_shots_remaining -= 1
+            if self.spread_shots_remaining <= 0:
+                self.weapon_type = "normal"
 
     def _spawn_shot(self, angle_offset):
         forward = pygame.Vector2(0, 1).rotate(self.rotation + angle_offset)
@@ -140,7 +147,10 @@ class Player(CircleShape):
         if is_active(pygame.K_SPACE):
             if self.shoot_cooldown <= 0:
                 self.shoot()
-                self.shoot_cooldown = PLAYER_SHOOT_COOLDOWN_SECONDS
+                if self.speed_boost_timer > 0:
+                    self.shoot_cooldown = PLAYER_SHOOT_COOLDOWN_SECONDS / 2
+                else:
+                    self.shoot_cooldown = PLAYER_SHOOT_COOLDOWN_SECONDS
         
         self.velocity *= PLAYER_FRICTION
         self.position += self.velocity * dt
