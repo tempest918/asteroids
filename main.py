@@ -8,6 +8,7 @@ from shot import Shot
 from powerup import PowerUp
 from bomb import Bomb
 from explosion import Explosion
+from particle import Particle
 from sounds import SoundManager
 import random
 
@@ -35,6 +36,7 @@ def main():
     PowerUp.containers = (powerups, updatable, drawable)
     Bomb.containers = (bombs, updatable, drawable)
     Explosion.containers = (explosions, updatable, drawable)
+    Particle.containers = (updatable, drawable)
 
     state = "MENU"
     score = 0

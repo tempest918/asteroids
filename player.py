@@ -1,7 +1,9 @@
 from circleshape import CircleShape
 from constants import *
 from shot import Shot
+from particle import Particle
 import pygame
+import random
 
 class Player(CircleShape):
     def __init__(self, x, y, sound_manager=None):
@@ -89,6 +91,11 @@ class Player(CircleShape):
         if self.speed_boost_timer > 0:
             accel *= 2.0
         self.velocity += forward * accel * dt
+        
+        # Spawn particles
+        particle_pos = self.position - forward * self.radius
+        particle_vel = -forward * 100 + pygame.Vector2(random.uniform(-20, 20), random.uniform(-20, 20))
+        Particle(particle_pos.x, particle_pos.y, particle_vel)
 
     def shoot(self):
         if self.weapon_type == "normal":
